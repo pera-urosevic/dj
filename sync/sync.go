@@ -1,40 +1,28 @@
 package sync
 
 import (
-	"fmt"
+	"somnusalis.org/dj/database"
+	"somnusalis.org/dj/filesystem"
+	"somnusalis.org/dj/log"
 )
 
-func Sync(playlistPath string, destinationPath string) {
-	fmt.Println()
-	fmt.Println("SYNC", playlistPath, destinationPath)
-	fmt.Println()
+func Sync(musicPath string) {
+	log.Header("SYNC")
 
-	playlist := getPlaylist(playlistPath)
-	mapping := getMapping(playlist)
-	files := getFiles(destinationPath)
+	db, err := database.Database()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
-	// delete files that are not in the playlist
-	for _, file := range files {
-		found := false
-		for _, v := range mapping {
-			if v == file {
-				found = true
-				break
-			}
-		}
-		if !found {
-			delete(destinationPath, file)
-		}
+	files := filesystem.GetFiles(musicPath)
+	records := getRecords(db)
+	records = removeRecords(db, records, files)
+	records = addRecords(db, records, files)
+
+	if len(records) == 0 {
+		log.Warning("empty database")
 	}
 
-	// copy files that are not in the destination
-	for path, filename := range mapping {
-		if exists(destinationPath, filename) {
-			continue
-		}
-		copy(path, destinationPath, filename)
-	}
-
-	fmt.Println("DONE")
-	fmt.Println()
+	log.Footer("DONE")
 }

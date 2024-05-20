@@ -1,25 +1,24 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"os"
 
-	"somnusalis.org/dj/info"
-	"somnusalis.org/dj/lint"
+	"somnusalis.org/dj/inspect"
+	"somnusalis.org/dj/log"
+	"somnusalis.org/dj/playlist"
+	"somnusalis.org/dj/query"
 	"somnusalis.org/dj/sync"
 )
 
 func usage() {
-	fmt.Println("usage:")
-	fmt.Println("dj lint <folder>")
-	fmt.Println("dj sync <playlist> <folder>")
+	log.Print("")
+	log.Print("DJ usage:")
+	log.Print("dj sync <folder> - sync folder to database")
+	log.Print("dj query <query> - query database")
+	log.Print("dj inspect <file> - inspect file")
+	log.Print("dj playlist <query> <playlist> - create playlist with query")
+	log.Print("")
 	os.Exit(0)
-}
-
-func wait() {
-	fmt.Print("Press enter to continue...")
-	bufio.NewReader(os.Stdin).ReadBytes('\n')
 }
 
 func main() {
@@ -29,17 +28,21 @@ func main() {
 		usage()
 	}
 
-	// info
-	if (args[1] == "info") && (args[2] != "") {
-		info.Info(args[2])
-		wait()
+	// sync
+	if (args[1] == "sync") && (args[2] != "") {
+		sync.Sync(args[2])
 		return
 	}
 
-	// lint
-	if (args[1] == "lint") && (args[2] != "") {
-		lint.Lint(args[2])
-		wait()
+	// query
+	if (args[1] == "query") && (args[2] != "") {
+		query.Query(args[2])
+		return
+	}
+
+	// inspect
+	if (args[1] == "inspect") && (args[2] != "") {
+		inspect.Inspect(args[2])
 		return
 	}
 
@@ -47,10 +50,9 @@ func main() {
 		usage()
 	}
 
-	// sync
-	if (args[1] == "sync") && (args[2] != "") && (args[3] != "") {
-		sync.Sync(args[2], args[3])
-		wait()
+	// playlist
+	if (args[1] == "playlist") && (args[2] != "") && (args[3] != "") {
+		playlist.Playlist(args[2], args[3])
 		return
 	}
 

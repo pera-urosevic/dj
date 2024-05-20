@@ -1,4 +1,4 @@
-package sync
+package filesystem
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func copy(source string, destinationPath string, destinationFilename string) {
+func Copy(source string, destinationPath string, destinationFilename string) {
 	destination := filepath.Join(destinationPath, destinationFilename)
 	fmt.Println("COPY")
 	fmt.Println(source)

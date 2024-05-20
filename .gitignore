@@ -1,3 +1,10 @@
-~*
+__pycache__
+*.pyc
+*.pyo
+*.so
+*.pyd
+
 *.sh
 *.ps1
+
+~*

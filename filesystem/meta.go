@@ -1,11 +1,13 @@
-package shared
+package filesystem
 
 import (
 	"os"
+	"strings"
 
 	"github.com/dhowden/tag"
 )
 
+// cspell:disable
 // AENC - Audio encryption
 // APIC - Attached picture
 // ASPI - Audio seek point index
@@ -89,6 +91,7 @@ import (
 // WPAY - Payment
 // WPUB - Publishers official webpage
 // WXXX - User defined URL link frame
+// cspell:enable
 
 func ReadMeta(path string) map[string]interface{} {
 	file, err := os.Open(path)
@@ -97,10 +100,23 @@ func ReadMeta(path string) map[string]interface{} {
 	}
 	defer file.Close()
 
-	meta, err := tag.ReadFrom(file)
+	tags, err := tag.ReadFrom(file)
 	if err != nil {
 		return map[string]interface{}{}
 	}
 
-	return meta.Raw()
+	meta := tags.Raw()
+	for k, v := range meta {
+		// trim images
+		if strings.HasPrefix(k, "APIC") {
+			v.(*tag.Picture).Data = []byte{0, 1, 2, 3}
+		}
+		// // remove lyrics
+		// if strings.HasPrefix(k, "USLT") {
+		// 	if len(v.(*tag.Comm).Text) > 0 {
+		// 		v.(*tag.Comm).Text = "<LYRICS>"
+		// 	}
+		// }
+	}
+	return meta
 }
