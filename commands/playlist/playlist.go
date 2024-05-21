@@ -17,9 +17,9 @@ func Playlist(query string, playlistPath string) {
 	}
 	defer db.Close()
 
-	where := database.GetQuery(db, query)
+	sql := database.GetQuery(db, query)
 
-	rows, err := db.Query("SELECT songs.path, meta.key, meta.value FROM songs, json_each(songs.meta) as meta WHERE " + where)
+	rows, err := db.Query(sql)
 	if err != nil {
 		panic(err)
 	}
@@ -28,13 +28,13 @@ func Playlist(query string, playlistPath string) {
 	lines = append(lines, "#EXTM3U")
 	lines = append(lines, "")
 	for rows.Next() {
-		result := database.RecordQueryResult{}
-		err := rows.Scan(&result.Path, &result.Key, &result.Value)
+		var path string
+		err := rows.Scan(&path)
 		if err != nil {
 			panic(err)
 		}
-		log.Action("adding", result.Path)
-		lines = append(lines, result.Path)
+		log.Action("adding", path)
+		lines = append(lines, path)
 		lines = append(lines, "")
 	}
 	m3u := strings.Join(lines, "\n")

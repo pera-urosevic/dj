@@ -14,18 +14,18 @@ func Query(query string) {
 	}
 	defer db.Close()
 
-	where := database.GetQuery(db, query)
-	log.Action("querying database where", where)
+	sql := database.GetQuery(db, query)
+	log.Action("querying database", sql)
 
-	rows, err := db.Query("SELECT songs.path, meta.key, meta.value FROM songs, json_each(songs.meta) as meta WHERE " + where)
+	rows, err := db.Query(sql)
 	if err != nil {
 		panic(err)
 	}
 
 	i := 0
 	for rows.Next() {
-		result := database.RecordQueryResult{}
-		err := rows.Scan(&result.Path, &result.Key, &result.Value)
+		result := database.RecordSong{}
+		err := rows.Scan(&result.Path)
 		if err != nil {
 			panic(err)
 		}

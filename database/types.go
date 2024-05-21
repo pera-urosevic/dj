@@ -8,6 +8,11 @@ type RecordSong struct {
 	Datetime time.Time
 }
 
+type RecordQuery struct {
+	Name  string
+	Query string
+}
+
 type RecordQueryResult struct {
 	Path  string
 	Key   string

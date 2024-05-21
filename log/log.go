@@ -23,9 +23,13 @@ func Action(action string, params ...interface{}) {
 }
 
 func Warning(warning interface{}) {
-	fmt.Printf("Warning! %v\n", warning)
+	fmt.Printf("[Warning] [%v]\n", warning)
 }
 
-func Result(i int, result database.RecordQueryResult) {
-	fmt.Printf("%d. %s (%s:%s)\n", i, result.Path, result.Key, result.Value)
+func Result(i int, result database.RecordSong) {
+	fmt.Printf("%d. %s\n", i, result.Path)
+}
+
+func KeyValue(key string, value string) {
+	fmt.Printf("%s: %v\n", key, value)
 }
