@@ -19,7 +19,7 @@ func usage() {
 	log.Print("dj show <path> - show meta for path")
 	log.Print("dj queries - list queries in database")
 	log.Print("dj query <query> - query database")
-	log.Print("dj playlist <query> <playlist> - create playlist with query")
+	log.Print("dj playlists - create playlists for each query")
 	log.Print("")
 	os.Exit(0)
 }
@@ -29,6 +29,12 @@ func main() {
 
 	if len(args) < 2 {
 		usage()
+	}
+
+	// playlist
+	if args[1] == "playlists" {
+		playlist.Playlists()
+		return
 	}
 
 	// queries
@@ -62,16 +68,6 @@ func main() {
 	// query
 	if (args[1] == "query") && (args[2] != "") {
 		query.Query(args[2])
-		return
-	}
-
-	if len(args) < 4 {
-		usage()
-	}
-
-	// playlist
-	if (args[1] == "playlist") && (args[2] != "") && (args[3] != "") {
-		playlist.Playlist(args[2], args[3])
 		return
 	}
 
