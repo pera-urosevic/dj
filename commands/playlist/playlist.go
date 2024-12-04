@@ -41,17 +41,22 @@ func Playlists() {
 		lines := []string{}
 		lines = append(lines, "#EXTM3U")
 		lines = append(lines, "")
+		count := 0
 		for rows.Next() {
 			var path string
 			err := rows.Scan(&path)
 			if err != nil {
 				panic(err)
 			}
+			count++
 			log.Action("adding", path)
 			lines = append(lines, path)
 			lines = append(lines, "")
 		}
 		m3u := strings.Join(lines, "\n")
+		if count < 1 {
+			continue
+		}
 		err = os.WriteFile(name+".m3u", []byte(m3u), 0644)
 		if err != nil {
 			panic(err)
